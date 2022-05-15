@@ -1,0 +1,17 @@
+{
+    "name": "dobot",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "npm run clear && npx tsc",
+        "clear": "npx rimraf dist"
+    },
+    "devDependencies": {
+        "rimraf": "^3.0.2",
+        "ts-node": "^10.7.0",
+        "typescript": "^4.6.4"
+    },
+    "dependencies": {
+        "chalk": "^4.1.2"
+    }
+}

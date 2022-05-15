@@ -1,0 +1,15 @@
+{
+    "compilerOptions":
+    {
+        "forceConsistentCasingInFileNames": true,
+        "esModuleInterop": true,
+
+        "baseUrl": "./",
+        "rootDir": "src",
+
+        "target": "ES2019",
+        "module": "commonjs",
+        "outDir": "dist",
+        "declaration": true
+    }
+}

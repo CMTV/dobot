@@ -59,7 +59,11 @@ export function getRunnableState(runnable: Runnable)
         }
     }
 
-    return chalk.gray('[' + runnable.getTypeCode() + ']') + ' ' + chalk.whiteBright(runnable.getName()) + ' ' + getState(runnable.state);
+    let duration = 0;
+    if ([State.Completed, State.Failed].includes(runnable.state))
+        duration = runnable.timer.getDuration();
+
+    return chalk.gray('[' + runnable.getTypeCode() + ']') + ' ' + chalk.whiteBright(runnable.getName()) + ' ' + getState(runnable.state) + (duration ? ' ' + chalk.gray(`[${duration}ms]`) : '');
 }
 
 //#region Tree

@@ -16,7 +16,7 @@ export default abstract class Process<TResult = void> extends Runnable<TResult>
         if (this.canPrintLifecycle() && this.canPrintStart())
             this.printStart();
 
-        this.timer.start();        
+        this.timer.start();
 
         let error;
         let result: TResult;
@@ -43,6 +43,17 @@ export default abstract class Process<TResult = void> extends Runnable<TResult>
         return result;
     }
 
+    withStage<TReturn = void>(stage: string, func: () => TReturn)
+    {
+        let oldStage = this.stage;
+
+        this.stage = stage;
+        let result = func();
+        this.stage = oldStage;
+
+        return result;
+    }
+
     protected fail(e: any): TResult
     {
         this.printFailed();
@@ -56,11 +67,23 @@ export default abstract class Process<TResult = void> extends Runnable<TResult>
 
     //#region Print methods
 
+    protected getStagedMsg(msg)
+    {
+        let lines = [];
+
+        if (this.stage)
+            lines.push(cchalk('gray')('Stage:') + ' ' + this.stage);
+        
+        lines.push(msg);
+
+        return lines;
+    }
+    
     protected log(toLog: any)
     {
         if (!this.canPrintOther()) return;
 
-        logRunnableBlock(this, cchalk('gray')(`Process log at ${this.timer.end()}ms`), 'white')
+        logRunnableBlock(this, this.getStagedMsg(cchalk('gray')(`Process log at ${this.timer.end()}ms`)), 'white');
         console.log(toLog);
         console.log();
     }
@@ -69,14 +92,7 @@ export default abstract class Process<TResult = void> extends Runnable<TResult>
     {
         if (!this.canPrintOther()) return;
 
-        let lines = [];
-
-        if (this.stage)
-            lines.push(cchalk('gray')('Stage:') + ' ' + this.stage);
-
-        lines.push(cchalk('gray')(`Process warning at ${this.timer.end()}ms`));
-
-        logRunnableBlock(this, lines, '#db6000');
+        logRunnableBlock(this, this.getStagedMsg(cchalk('gray')(`Process warning at ${this.timer.end()}ms`)), '#db6000');
         console.log(toLog);
         console.log();
     }
@@ -95,14 +111,7 @@ export default abstract class Process<TResult = void> extends Runnable<TResult>
 
     protected printFailed()
     {
-        let lines = [];
-
-        if (this.stage)
-            lines.push(cchalk('gray')('Stage:') + ' ' + this.stage);
-
-        lines.push(cchalk('gray')(`Process failed in ${this.timer.end()}ms`));
-
-        logRunnableBlock(this, lines, 'red');
+        logRunnableBlock(this, this.getStagedMsg(cchalk('gray')(`Process failed in ${this.timer.end()}ms`)), 'red');
     }
 
     //#endregion

@@ -2,23 +2,26 @@ export default class Timer
 {
     private startTime: number;
     private endTime: number;
-    private duration: number;
 
     start()
     {
-        this.startTime = Date.now();
+        this.startTime = performance.now();
     }
 
     end()
     {
-        this.endTime = Date.now();
-        this.duration = this.endTime - this.startTime;
-
-        return this.duration;
+        this.endTime = performance.now();
     }
 
-    getDuration()
+    //
+
+    getCurrent()
     {
-        return this.duration;
+        return Math.round(performance.now() - this.startTime);
+    }
+
+    getFullDuration()
+    {
+        return Math.round(this.endTime - this.startTime);
     }
 }
